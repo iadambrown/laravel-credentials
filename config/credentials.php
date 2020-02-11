@@ -1,20 +1,20 @@
 <?php
 
-use BeyondCode\Credentials\Credentials as CredentialsAlias;
+use BeyondCode\Credentials\Credentials;
 
 switch (env('APP_ENV')) {
     case 'testing':
-        $file = config_path(CredentialsAlias::TESTING_CONFIG_FILE);
+        $file = config_path(Credentials::TESTING_CONFIG_FILE);
         break;
     case 'staging':
-        $file = config_path(CredentialsAlias::STAGING_CONFIG_FILE);
+        $file = config_path(Credentials::STAGING_CONFIG_FILE);
         break;
     case 'production':
-        $file = config_path(CredentialsAlias::PRODUCTION_CONFIG_FILE);
+        $file = config_path(Credentials::PRODUCTION_CONFIG_FILE);
         break;
     case 'local':
     default:
-        $file = config_path(CredentialsAlias::LOCAL_CONFIG_FILE);
+        $file = config_path(Credentials::LOCAL_CONFIG_FILE);
         break;
 }
 
