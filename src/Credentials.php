@@ -9,6 +9,7 @@ use BeyondCode\Credentials\Exceptions\FileDoesNotExist;
 class Credentials
 {
     const CONFIG_PREFIX = '___credentials_';
+    const SINGLE_CONFIG_FILE = 'credentials.php.enc';
     const LOCAL_CONFIG_FILE = 'credentials.local.php.enc';
     const TESTING_CONFIG_FILE = 'credentials.testing.php.enc';
     const STAGING_CONFIG_FILE = 'credentials.staging.php.enc';

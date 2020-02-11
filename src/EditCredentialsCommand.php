@@ -13,7 +13,7 @@ class EditCredentialsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'credentials:edit {environment}';
+    protected $signature = 'credentials:edit {environment?}';
 
     /**
      * The console command description.
@@ -32,7 +32,17 @@ class EditCredentialsCommand extends Command
      */
     public function handle(Credentials $credentials)
     {
-        $filename = config_path("credentials.{$this->argument('environment')}.php.enc");
+        if (! empty($this->argument('environment'))) {
+            if (config('credentials.multiple-environments') === false) {
+                return $this->info("You must not provide an environment when config('credentials.multiple-environments') is false");
+            }
+            $filename = config_path("credentials.{$this->argument('environment')}.php.enc");
+        } else {
+            if (config('credentials.multiple-environments') === true) {
+                return $this->info("You must provide an environment when config('credentials.multiple-environments') is true");
+            }
+            $filename = config('credentials.file');
+        }
 
         $decrypted = $credentials->load($filename);
 
@@ -43,7 +53,7 @@ class EditCredentialsCommand extends Command
 
         $editor = env('EDITOR', 'vi');
 
-        $process = new Process($editor.' '.$meta['uri']);
+        $process = new Process($editor . ' ' . $meta['uri']);
 
         $process->setTty(true);
         $process->mustRun();
