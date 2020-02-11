@@ -13,7 +13,7 @@ class EditCredentialsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'credentials:edit';
+    protected $signature = 'credentials:edit {--env=local}';
 
     /**
      * The console command description.
@@ -30,7 +30,11 @@ class EditCredentialsCommand extends Command
      */
     public function handle(Credentials $credentials)
     {
-        $filename = config('credentials.file');
+        if ($this->options('env') !== null) {
+            $filename = config_path("credentials.{$this->options('env')}.php.enc");
+        } else {
+            $filename = config('credentials.file');
+        }
 
         $decrypted = $credentials->load($filename);
 

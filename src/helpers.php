@@ -19,7 +19,7 @@ if (! function_exists('credentials')) {
             $credentials->load($filename);
 
             return $credentials->get($key, $default);
-        } catch (ReflectionException $e) {
+        } catch (ReflectionException | Illuminate\Contracts\Container\BindingResolutionException $e) {
             return Credentials::CONFIG_PREFIX.$key;
         }
     }
