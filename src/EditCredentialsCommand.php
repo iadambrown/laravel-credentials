@@ -13,7 +13,7 @@ class EditCredentialsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'credentials:edit {--env=local}';
+    protected $signature = 'credentials:edit {environment}';
 
     /**
      * The console command description.
@@ -26,22 +26,20 @@ class EditCredentialsCommand extends Command
      * The command handler.
      *
      * @param \BeyondCode\Credentials\Credentials $credentials
+     *
      * @return void
+     * @throws InvalidJSON
      */
     public function handle(Credentials $credentials)
     {
-        if ($this->options('env') !== null) {
-            $filename = config_path("credentials.{$this->options('env')}.php.enc");
-        } else {
-            $filename = config('credentials.file');
-        }
+        $filename = config_path("credentials.{$this->argument('environment')}.php.enc");
 
         $decrypted = $credentials->load($filename);
 
         $handle = tmpfile();
         $meta = stream_get_meta_data($handle);
 
-        fwrite($handle, json_encode($decrypted, JSON_PRETTY_PRINT | JSON_FORCE_OBJECT));
+        fwrite($handle, json_encode($decrypted, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_FORCE_OBJECT, 512));
 
         $editor = env('EDITOR', 'vi');
 
@@ -50,7 +48,7 @@ class EditCredentialsCommand extends Command
         $process->setTty(true);
         $process->mustRun();
 
-        $data = json_decode(file_get_contents($meta['uri']), JSON_OBJECT_AS_ARRAY);
+        $data = json_decode(file_get_contents($meta['uri']), JSON_OBJECT_AS_ARRAY, 512, JSON_THROW_ON_ERROR);
 
         if (JSON_ERROR_NONE !== json_last_error()) {
             throw InvalidJSON::create(json_last_error());

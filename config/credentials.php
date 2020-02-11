@@ -2,7 +2,7 @@
 
 use BeyondCode\Credentials\Credentials as CredentialsAlias;
 
-switch (app()->environment()) {
+switch (env('APP_ENV')) {
     case 'testing':
         $file = config_path(CredentialsAlias::TESTING_CONFIG_FILE);
         break;
